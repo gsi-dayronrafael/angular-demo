@@ -1,0 +1,28 @@
+<div *ngIf="todo">
+  <div *ngIf="!isEditing; else showEditInput">
+    <input class="todo__state" type="checkbox" on-change="toggleStatus()" [checked]="todo.completed"/>
+    <span
+      class="todo__title"
+      [class.completed]="todo.completed"
+      on-click="toggleEditing()"
+      >{{ todo.title }}</span
+    >
+    <button class="todo__button-remove" on-click="remove(todo)">x</button>
+  </div>
+  <ng-template #showEditInput>
+    <input
+      class="todo__edit"
+      type="text"
+      on-keyup.enter="setNewTitle(newTitle.value)"
+      on-blur="setNewTitle(newTitle.value)"
+      #newTitle
+      [value]="todo.title"
+    />
+    <button class="todo__button-ok" on-click="setNewTitle(newTitle.value)">
+      ok
+    </button>
+    <button class="todo__button-cancel" on-click="toggleEditing()">
+      cancel
+    </button>
+  </ng-template>
+</div>

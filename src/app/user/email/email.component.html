@@ -1,0 +1,22 @@
+<h3>User details</h3>
+<div>
+  <button on-click="goBack()">go back</button>
+</div>
+<div *ngIf="!email">
+  <label for="newEmail">Add new email: </label>
+  <input id="newEmail" type="text" #newEmail />
+  <button on-click="add(newEmail.value)">ok</button>
+</div>
+<div *ngIf="email">
+  <div *ngIf="!isEditing; else updateEmail">
+    <span>email: {{ email }}</span>
+    <button on-click="toggleEditing()">Edit</button>
+    <button on-click="delete()">Delete</button>
+  </div>
+  <ng-template #updateEmail>
+    <label for="updateEmail">Edit email: </label>
+    <input id="updateEmail" type="text" #updateEmail [value]="email" />
+    <button on-click="update(updateEmail.value)">update</button>
+    <button on-click="toggleEditing()">cancel</button>
+  </ng-template>
+</div>
