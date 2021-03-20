@@ -10,10 +10,7 @@ import { EmailService } from '../../user/email/email.service';
   styleUrls: ['./todo-list.component.less'],
 })
 export class TodoListComponent implements OnInit {
-  todos?: Todo[];
-  origTodos = new Observable<Todo[]>((subscriber) => {
-    this.todoService.getTodos().subscribe((todos) => subscriber.next(todos));
-  });
+  todos: Todo[] = [];
   email?: string;
 
   constructor(
@@ -41,33 +38,13 @@ export class TodoListComponent implements OnInit {
     return this.todos.filter((todo) => !todo.completed).length;
   }
 
-  filterBy(condition?: string): void {
-    if (!this.todos) {
-      return;
-    }
-    let filterCallback: {
-      (todo: Todo): boolean;
-    };
-    switch (condition) {
-      case 'active':
-        filterCallback = (todo: Todo) => !todo.completed;
-        break;
-      case 'completed':
-        filterCallback = (todo: Todo) => todo.completed;
-        break;
-      default:
-        filterCallback = (todo: Todo) => !!todo.id;
-        break;
-    }
-    this.origTodos.subscribe(
-      (todos: Todo[]) => (this.todos = todos.filter(filterCallback))
-    );
+  filterBy(condition: 'all' | 'active' | 'completed'): void {
+    this.todoService
+      .filterTodosBy(condition)
+      .subscribe((result) => (this.todos = result));
   }
 
   remove(id: number): void {
-    if (!this.todos) {
-      return;
-    }
     this.todos = this.todos.filter((todo) => todo.id !== id);
     this.todoService.removeTodo(id).subscribe();
   }

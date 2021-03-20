@@ -12,6 +12,7 @@ export class TodoService {
   constructor(private http: HttpClient, private messageService: DebugService) {}
 
   todosUrl = `/api/todos`;
+  todos: Todo[] = [];
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
   };
@@ -33,8 +34,29 @@ export class TodoService {
 
   getTodos(): Observable<Todo[]> {
     return this.http.get<Todo[]>(this.todosUrl).pipe(
-      tap((_) => this.log('Fetched todos')),
+      tap((todos) => {
+        this.todos = todos;
+        this.log('Fetched todos');
+      }),
       catchError(this.handleError<Todo[]>('GetTodos', []))
+    );
+  }
+
+  filterTodosBy(condition: 'all' | 'active' | 'completed'): Observable<Todo[]> {
+    let filterCallback: (todo: Todo) => boolean;
+    switch (condition) {
+      case 'active':
+        filterCallback = (todo: Todo) => !todo.completed;
+        break;
+      case 'completed':
+        filterCallback = (todo: Todo) => todo.completed;
+        break;
+      case 'all':
+        filterCallback = (todo: Todo) => !!todo.id;
+        break;
+    }
+    return of(this.todos.filter(filterCallback)).pipe(
+      tap((_) => this.log(`Filter by= ${condition}`))
     );
   }
 
@@ -42,7 +64,10 @@ export class TodoService {
     const id = typeof todoId === 'number' ? todoId : todoId.id;
     const url = `${this.todosUrl}/${id}`;
     return this.http.delete(url, this.httpOptions).pipe(
-      tap((_) => this.log(`Removed todo w/ id= ${id}`)),
+      tap((_) => {
+        this.getTodos().subscribe();
+        this.log(`Removed todo w/ id= ${id}`);
+      }),
       catchError(this.handleError<any>('RemoveTodo'))
     );
   }
@@ -51,7 +76,10 @@ export class TodoService {
     return this.http
       .post<Todo>(this.todosUrl, { title, completed: false })
       .pipe(
-        tap((todo) => this.log(`Added new TODO w/ title = ${todo.title}`)),
+        tap((todo) => {
+          this.getTodos().subscribe();
+          this.log(`Added new TODO w/ title = ${todo.title}`);
+        }),
         catchError(this.handleError<Todo>('AddTodo'))
       );
   }
@@ -59,7 +87,10 @@ export class TodoService {
   updateTodo(todo: Todo): Observable<Todo> {
     const url = `${this.todosUrl}/${todo.id}`;
     return this.http.put<Todo>(url, todo, this.httpOptions).pipe(
-      tap((_) => this.log(`Update Todo w/ id= ${todo.id}`)),
+      tap((_) => {
+        this.getTodos().subscribe();
+        this.log(`Update Todo w/ id= ${todo.id}`);
+      }),
       catchError(this.handleError<Todo>('UpdateTodo'))
     );
   }

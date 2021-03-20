@@ -7,7 +7,7 @@ import { Todo } from '../Todo';
   styleUrls: ['./todo.component.less'],
 })
 export class TodoComponent implements OnInit {
-  @Input() todo?: Todo;
+  @Input() todo: Todo = {} as Todo;
   @Output() todoRemove: EventEmitter<number> = new EventEmitter();
   @Output() todoEdit: EventEmitter<Todo> = new EventEmitter();
 
