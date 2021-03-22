@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Todo } from '../Todo';
 import { TodoService } from '../todo.service';
 import { Observable } from 'rxjs';
-import { EmailService } from '../../user/email/email.service';
+import { UserService } from '../../user/user.service';
 
 @Component({
   selector: 'app-todo-list',
@@ -15,7 +15,7 @@ export class TodoListComponent implements OnInit {
 
   constructor(
     private todoService: TodoService,
-    private emailService: EmailService
+    private emailService: UserService
   ) {}
 
   ngOnInit(): void {

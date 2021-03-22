@@ -1,0 +1,75 @@
+<button (click)="goBack()">Go Back</button>
+<h3>Editing user: {{ userFirstName.value }}</h3>
+<form [formGroup]="userProfile" (ngSubmit)="onSubmit()">
+  <h4>Basic info</h4>
+  <div>
+    <label>
+      First Name:
+      <input type="text" formControlName="firstName" />
+    </label>
+    <div *ngIf="userFirstName.invalid && (userFirstName.touched || userFirstName.dirty)">
+      <p *ngIf="userFirstName.errors?.required">Firstname is required</p>
+      <p *ngIf="userFirstName.errors?.minLength">FirstName must be at least 6 characters long.</p>
+      <p *ngIf="userFirstName.errors?.forbiddenName">FirstName must no contain: Ramon</p>
+      <p *ngIf="userFirstName.errors?.nameEquals">FirstName and LastName couldn't be equals</p>
+    </div>
+  </div>
+  <div>
+    <label>
+      Last Name:
+      <input type="text" formControlName="lastName" />
+    </label>
+  </div>
+  <h4>Contact info</h4>
+  <div>
+    <label>
+      Email:
+      <input type="text" formControlName="email" />
+    </label>
+    <div *ngIf="userEmail.invalid && (userEmail.dirty || userEmail.touched)">
+      <p *ngIf="userEmail.errors?.email">Must provide a valid email address</p>
+      <p *ngIf="userEmail.errors?.uniqueEmail">Email is taken, please provide a different one.</p>
+    </div>
+  </div>
+  <div>
+    <label>
+      Occupation:
+      <input type="text" formControlName="occupation" />
+    </label>
+  </div>
+  <div>
+    <label>
+      Phone:
+      <input type="text" formControlName="phone" />
+    </label>
+  </div>
+  <div formGroupName="address">
+    <span>
+      <label>
+        Street:
+        <input type="text" formControlName="street" /> </label
+    ></span>
+    <span>
+      <label>
+        City:
+        <input type="text" formControlName="city" /> </label
+    ></span>
+    <span>
+      <label>
+        State:
+        <input type="text" formControlName="state" /> </label
+    ></span>
+  </div>
+  <div formArrayName="aliases">
+    <h4>Aliases<button (click)="addAlias()" type="button">Add alias</button></h4>
+    <div *ngFor="let alias of aliases.controls; let i = index">
+      <label>
+        Alias:
+        <input type="text" [formControlName]="i" />
+      </label>
+    </div>
+  </div>
+  <br/>
+  <p>Form Status: {{userProfile.status}}</p>
+  <button type="submit" [disabled]="!userProfile.valid">Save</button>
+</form>

@@ -1,0 +1,21 @@
+<div *ngIf="user.id">
+  <button on-click="goBack()">go back</button>
+
+<h3>{{user.firstName}}'s details<span><a routerLink="/user/{{user.id}}">[ edit ]</a></span></h3>
+<div>
+  <h4>Primary info</h4>
+  <p>Name: {{ user.firstName }}</p>
+  <p>LastName: {{ user.lastName }}</p>
+  <p>Ocupation: {{ user.occupation }}</p>
+  <h4>Contact info</h4>
+  <p>Email: {{ user.email }}</p>
+  <p>Phone: {{ user.phone }}</p>
+  <p>
+    Address: <span>{{ user.address.street }} </span
+    ><span>{{ user.address.city }} </span
+    ><span>{{ user.address.state }} </span>
+  </p>
+  <h4>Alias</h4>
+  <span *ngFor="let alias of user.aliases">{{ alias }}, </span>
+</div>
+</div>
