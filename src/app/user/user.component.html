@@ -1,0 +1,45 @@
+<div *ngIf="user.id; else loading">
+  <div *ngIf="userWasUpdate" class="alert alert-success alert-dismissible fade show" role="alert">
+    <span class="small"><strong>Success!</strong> user profile was edited correctly.</span>
+    <button type="button" class="close small" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="my-3">
+    <div class="">
+      <h4 class="my-3">Primary info</h4>
+      <span class="small text-muted">Name:</span>
+      <p class="mb-2">{{ user.firstName }}</p>
+      <span class="small text-muted">LastName: </span>
+      <p class="mb-2">{{ user.lastName }}</p>
+      <span class="small text-muted">Ocupation: </span>
+      <p class="mb-2">{{ user.occupation }}</p>
+    </div>
+    <div class="mb-3">
+      <h4 class="my-3">Contact info</h4>
+      <span class="small text-muted">Email: </span>
+      <p class="mb-2">{{ user.email }}</p>
+      <span class="small text-muted">Phone: </span>
+      <p class="mb-2">{{ user.phone }}</p>
+      <span class="small text-muted">Address: </span>
+      <p class="mb-2">
+        <span>{{ user.address.street }} </span
+        ><span>{{ user.address.city }} </span
+        ><span>{{ user.address.state }} </span>
+      </p>
+    </div>
+    <div class="my-3">
+      <h4 class="my-3">Alias</h4>
+      <span *ngFor="let alias of user.aliases">{{ alias }}, </span>
+    </div>
+  </div>
+  <div class="d-flex justify-content-around align-items-center pt-4">
+    <button on-click="goBack()" class="btn btn-secondary mr-2 w-100">
+      Go back
+    </button>
+    <a routerLink="/user/{{ user.id }}" class="btn btn-primary w-100">Edit</a>
+  </div>
+</div>
+<ng-template #loading>
+  <div class="text-center text-success mx-auto">...loading</div>
+</ng-template>

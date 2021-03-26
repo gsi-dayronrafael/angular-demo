@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { faAngular } from '@fortawesome/free-brands-svg-icons';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.less'],
 })
 export class AppComponent {
-  title = 'My Todo App';
+  title = 'To-Do';
+  angularIcon = faAngular;
 }

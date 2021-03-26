@@ -6,6 +6,8 @@ import { Injectable } from '@angular/core';
 export class DebugService {
   constructor() {}
 
+  visible = false;
+
   messages: string[] = [];
 
   add(message: string): void {
@@ -13,5 +15,8 @@ export class DebugService {
   }
   clear(): void {
     this.messages.length = 0;
+  }
+  toggleVisible(): void {
+    this.visible = !this.visible;
   }
 }

@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { TodoListComponent } from './todos/todo-list/todo-list.component';
-import { UserDetailsComponent } from './user/user-details/user-details.component';
+import { TodosComponent } from './todos/todos.component';
+import { UserComponent } from './user/user.component';
 import { UserEditComponent } from './user/user-edit/user-edit.component';
 
 const routes: Routes = [
   {
     path: 'todos',
-    component: TodoListComponent,
+    component: TodosComponent,
   },
   {
     path: 'user',
-    component: UserDetailsComponent,
+    component: UserComponent,
   },
   {
     path: 'user/:id',

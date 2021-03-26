@@ -1,75 +1,105 @@
-<button (click)="goBack()">Go Back</button>
-<h3>Editing user: {{ userFirstName.value }}</h3>
-<form [formGroup]="userProfile" (ngSubmit)="onSubmit()">
-  <h4>Basic info</h4>
-  <div>
-    <label>
-      First Name:
-      <input type="text" formControlName="firstName" />
-    </label>
-    <div *ngIf="userFirstName.invalid && (userFirstName.touched || userFirstName.dirty)">
-      <p *ngIf="userFirstName.errors?.required">Firstname is required</p>
-      <p *ngIf="userFirstName.errors?.minLength">FirstName must be at least 6 characters long.</p>
-      <p *ngIf="userFirstName.errors?.forbiddenName">FirstName must no contain: Ramon</p>
-      <p *ngIf="userFirstName.errors?.nameEquals">FirstName and LastName couldn't be equals</p>
+<form [formGroup]="userProfile" (ngSubmit)="onSubmit()" class="">
+  <div class="form-row">
+    <h4 class="my-3 col-12">Basic info</h4>
+    <div class="form-group col-md-6">
+      <label class="small"> First Name: </label>
+      <input
+        type="text"
+        formControlName="firstName"
+        class="form-control"
+        [ngClass]="setValidationClass('firstName')"
+      />
+      <div class="invalid-feedback">
+        <div *ngIf="userFirstName.errors?.required">
+          First Name is required.
+        </div>
+        <div *ngIf="userFirstName.errors?.minlength">
+          First Name must be at least 6 characters long.
+        </div>
+        <div *ngIf="userFirstName.errors?.forbiddenName">
+          First Name must no contain: Ramon
+        </div>
+      </div>
     </div>
-  </div>
-  <div>
-    <label>
-      Last Name:
-      <input type="text" formControlName="lastName" />
-    </label>
-  </div>
-  <h4>Contact info</h4>
-  <div>
-    <label>
-      Email:
-      <input type="text" formControlName="email" />
-    </label>
-    <div *ngIf="userEmail.invalid && (userEmail.dirty || userEmail.touched)">
-      <p *ngIf="userEmail.errors?.email">Must provide a valid email address</p>
-      <p *ngIf="userEmail.errors?.uniqueEmail">Email is taken, please provide a different one.</p>
+    <div class="form-group col-md-6">
+      <label class="small"> Last Name: </label>
+      <input
+        type="text"
+        formControlName="lastName"
+        class="form-control"
+        [ngClass]="setValidationClass('lastName')"
+      />
     </div>
-  </div>
-  <div>
-    <label>
-      Occupation:
-      <input type="text" formControlName="occupation" />
-    </label>
-  </div>
-  <div>
-    <label>
-      Phone:
-      <input type="text" formControlName="phone" />
-    </label>
-  </div>
-  <div formGroupName="address">
-    <span>
-      <label>
-        Street:
-        <input type="text" formControlName="street" /> </label
-    ></span>
-    <span>
-      <label>
-        City:
-        <input type="text" formControlName="city" /> </label
-    ></span>
-    <span>
-      <label>
-        State:
-        <input type="text" formControlName="state" /> </label
-    ></span>
-  </div>
-  <div formArrayName="aliases">
-    <h4>Aliases<button (click)="addAlias()" type="button">Add alias</button></h4>
-    <div *ngFor="let alias of aliases.controls; let i = index">
-      <label>
-        Alias:
-        <input type="text" [formControlName]="i" />
-      </label>
+
+    <h4 class="my-3 col-12">Contact info</h4>
+    <div class="form-group col-md-12">
+      <label class="small"> Email: </label>
+      <input
+        type="text"
+        formControlName="email"
+        class="form-control"
+        [ngClass]="setValidationClass('email')"
+      />
+      <div class="invalid-feedback">
+        <div *ngIf="userEmail.errors?.required">
+          Email is required.
+        </div>
+        <div *ngIf="userEmail.errors?.email">
+          Must provide a valid email address
+        </div>
+        <div *ngIf="userEmail.errors?.uniqueEmail">
+          Email is taken, please provide a different one.
+        </div>
+      </div>
     </div>
+    <div class="form-group col-md-6">
+      <label class="small"> Occupation: </label>
+      <input type="text" formControlName="occupation" class="form-control" [ngClass]="setValidationClass('occupation')" />
+    </div>
+    <div class="form-group col-md-6">
+      <label class="small"> Phone: </label>
+      <input type="text" formControlName="phone" class="form-control" [ngClass]="setValidationClass('phone')" />
+    </div>
+    <div formGroupName="address" class="form-group row px-1">
+      <div class="form-group col-md-12">
+        <label class="small"> Street: </label>
+        <input type="text" formControlName="street" class="form-control" [ngClass]="setValidationClass('address.street')" />
+      </div>
+      <div class="form-group col-md-6 pr-md-1">
+        <label class="small"> City: </label>
+        <input type="text" formControlName="city" class="form-control" [ngClass]="setValidationClass('address.city')" />
+      </div>
+      <div class="form-group col-md-6 pl-md-1">
+        <label class="small"> State: </label>
+        <input type="text" formControlName="state" class="form-control" [ngClass]="setValidationClass('address.state')" />
+      </div>
+    </div>
+    <div formArrayName="aliases" class="col-12">
+      <h4 class="my-3">
+        Aliases<button
+          (click)="addAlias()"
+          type="button"
+          class="ml-2 btn btn-outline-secondary btn-sm"
+        >
+          Add
+        </button>
+      </h4>
+      <div *ngFor="let alias of aliases.controls; let i = index">
+        <label class="small"> Alias: </label>
+        <input type="text" [formControlName]="i" class="form-control" [ngClass]="setValidationClass(i)" />
+      </div>
+    </div>
+    <br />
   </div>
-  <br/>
-  <p>Form Status: {{userProfile.status}}</p>
-  <button type="submit" [disabled]="!userProfile.valid">Save</button>
+  <div class="d-flex justify-content-around align-items-center mt-5">
+    <button (click)="goBack()" class="btn btn-secondary mr-2 w-100">Go Back</button>
+    <button
+      type="submit"
+      [disabled]="!userProfile.valid"
+      class="btn btn-primary w-100"
+    >
+      Save
+    </button>
+  </div>
 </form>
+

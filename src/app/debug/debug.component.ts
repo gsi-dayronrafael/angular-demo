@@ -21,4 +21,8 @@ export class DebugComponent implements OnInit {
   clear(): void {
     this.debugService.clear();
   }
+
+  get isVisible(): boolean {
+    return this.debugService.visible;
+  }
 }

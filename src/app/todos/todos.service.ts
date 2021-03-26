@@ -1,25 +1,32 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Todo } from './Todo';
+import { Todo } from './todo.model';
 import { DebugService } from '../debug/debug.service';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, finalize, map, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
-export class TodoService {
+export class TodosService {
   constructor(private http: HttpClient, private messageService: DebugService) {}
-
-  todosUrl = `/api/todos`;
-  todos: Todo[] = [];
-  httpOptions = {
+  isLoading = false;
+  private todosUrl = `/api/todos`;
+  private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
   };
 
-  log(message: string): void {
+  todoEditingId = -1;
+
+  setEditingTodoId(id: number): void {
+    this.todoEditingId = id;
+  }
+
+  private log(message: string): void {
     this.messageService.add(`TodoService: ${message}`);
   }
+
+  private onFinish = () => (this.isLoading = false);
 
   private handleError<T>(
     operation = 'operation',
@@ -32,18 +39,19 @@ export class TodoService {
     };
   }
 
-  getTodos(): Observable<Todo[]> {
+  fetchTodos(): Observable<Todo[]> {
+    this.isLoading = true;
     return this.http.get<Todo[]>(this.todosUrl).pipe(
       tap((todos) => {
-        this.todos = todos;
         this.log('Fetched todos');
       }),
-      catchError(this.handleError<Todo[]>('GetTodos', []))
+      catchError(this.handleError<Todo[]>('GetTodos', [])),
+      finalize(this.onFinish)
     );
   }
 
-  filterTodosBy(condition: 'all' | 'active' | 'completed'): Observable<Todo[]> {
-    let filterCallback: (todo: Todo) => boolean;
+  filterTodosBy(condition: string): Observable<Todo[]> {
+    let filterCallback = (todo: Todo) => !!todo.id;
     switch (condition) {
       case 'active':
         filterCallback = (todo: Todo) => !todo.completed;
@@ -55,43 +63,45 @@ export class TodoService {
         filterCallback = (todo: Todo) => !!todo.id;
         break;
     }
-    return of(this.todos.filter(filterCallback)).pipe(
+    return this.fetchTodos().pipe(
+      map((todos) => todos.filter(filterCallback)),
       tap((_) => this.log(`Filter by= ${condition}`))
     );
   }
 
   removeTodo(todoId: number | Todo): Observable<any> {
+    this.isLoading = true;
     const id = typeof todoId === 'number' ? todoId : todoId.id;
     const url = `${this.todosUrl}/${id}`;
     return this.http.delete(url, this.httpOptions).pipe(
       tap((_) => {
-        this.getTodos().subscribe();
         this.log(`Removed todo w/ id= ${id}`);
       }),
-      catchError(this.handleError<any>('RemoveTodo'))
+      catchError(this.handleError<any>('RemoveTodo')),
+      finalize(this.onFinish)
     );
   }
 
-  addTodo(title: string): Observable<Todo> {
-    return this.http
-      .post<Todo>(this.todosUrl, { title, completed: false })
-      .pipe(
-        tap((todo) => {
-          this.getTodos().subscribe();
-          this.log(`Added new TODO w/ title = ${todo.title}`);
-        }),
-        catchError(this.handleError<Todo>('AddTodo'))
-      );
+  addTodo(todo: Todo): Observable<Todo> {
+    this.isLoading = true;
+    return this.http.post<Todo>(this.todosUrl, todo).pipe(
+      tap((newTodo) => {
+        this.log(`Added new TODO w/ title = ${todo.title}`);
+      }),
+      catchError(this.handleError<Todo>('AddTodo')),
+      finalize(this.onFinish)
+    );
   }
 
   updateTodo(todo: Todo): Observable<Todo> {
+    this.isLoading = true;
     const url = `${this.todosUrl}/${todo.id}`;
     return this.http.put<Todo>(url, todo, this.httpOptions).pipe(
       tap((_) => {
-        this.getTodos().subscribe();
         this.log(`Update Todo w/ id= ${todo.id}`);
       }),
-      catchError(this.handleError<Todo>('UpdateTodo'))
+      catchError(this.handleError<Todo>('UpdateTodo')),
+      finalize(this.onFinish)
     );
   }
 }

@@ -1,9 +1,12 @@
-<div *ngIf="messages.length">
-  <h2>Debugging</h2>
-  <button on-click="clear()">Clear</button>
-  <ul>
-    <li *ngFor="let message of messages">
-      {{message}}
+<div *ngIf="messages.length && isVisible" class="p-2 border mt-4">
+  <h5>
+    Debugging
+    <button on-click="clear()" class="btn btn-outline-secondary btn-sm">Clear</button>
+  </h5>
+  <ul class="text-muted pl-4">
+    <li *ngFor="let message of messages" class="small">
+      {{ message }}
     </li>
   </ul>
 </div>
+

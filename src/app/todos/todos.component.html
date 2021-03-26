@@ -1,0 +1,85 @@
+<div>
+  <div class="mb-2 d-flex justify-content-between">
+    <small>
+      <fa-icon [icon]="userIcon" class="arrow-indicator text-muted" ></fa-icon> User:
+      <a routerLink="/user" class="mr-2"> {{ user.firstName }}</a>
+      <small style="cursor: pointer"  (click)="toggleDebugger()" [ngClass]="isDebuggerVisible ? 'text-muted' : 'text-success'">
+       <span class="mr-1">| debugger</span> <fa-icon [icon]="isDebuggerVisible ? angleDownIcon : angleUpIcon "></fa-icon>
+      </small>
+    </small>
+  </div>
+  <div class="input-group mb-4">
+    <input
+      type="text"
+      #todoTitle
+      placeholder="Thing to be done."
+      class="form-control"
+    />
+    <div class="input-group-append">
+      <button
+        on-click="add(todoTitle.value); todoTitle.value = ''"
+        class="btn btn-primary"
+      >
+        Add
+      </button>
+    </div>
+  </div>
+</div>
+<div *ngIf="isLoading" class="text-center text-success">Loading...</div>
+<ul
+  *ngIf="todos?.length else noTodosMessage"
+  style="list-style: none"
+  class="pl-2 mb-5"
+>
+  <li *ngFor="let todo of todos" class="mb-1">
+    <app-todo
+      [todo]="todo"
+      (remove)="removeTodo($event)"
+      (update)="updateTodo($event)"
+    ></app-todo>
+  </li>
+</ul>
+<ng-template #noTodosMessage>
+  <div *ngIf="!isLoading" class="alert alert-warning fade show" role="alert">
+    <span>No todos to display, please add <strong>one</strong>!</span>
+  </div>
+</ng-template>
+<div style="font-size: smaller" class="text-muted">
+  <div class="mb-2">
+    <span class="badge badge-pill badge-secondary">{{ itemLeft }}</span> items
+    left.
+  </div>
+  <div class="">
+    <span>
+       <button
+         id="all"
+         #filterAllBtn
+         type="button"
+         [class]="setCurrentClasses(filterAllBtn.id)"
+         on-click="filterBy(filterAllBtn.id)"
+       >
+      All
+    </button>
+    |
+    <button
+      id="active"
+      type="button"
+      #filterActiveBtn
+      [class]="setCurrentClasses(filterActiveBtn.id)"
+      on-click="filterBy(filterActiveBtn.id)"
+    >
+      Active
+    </button>
+    |
+    <button
+      id="completed"
+      type="button"
+      #filterCompletedBtn
+      [class]="setCurrentClasses(filterCompletedBtn.id)"
+      on-click="filterBy(filterCompletedBtn.id)"
+    >
+      Completed
+    </button>
+    </span>
+  </div>
+</div>

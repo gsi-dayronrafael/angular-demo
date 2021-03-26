@@ -1,3 +1,14 @@
-<h2>{{title}}</h2>
-<router-outlet></router-outlet>
-<app-debug></app-debug>
+<main class="app-wrapper card bg-light">
+  <div class="card-body pb-0">
+    <a routerLink="/"
+      ><h2 class="mb-4 text-primary text-center">{{ title }}</h2></a
+    >
+    <router-outlet></router-outlet>
+    <app-debug></app-debug>
+    <footer class="text-primary text-center">
+      <div class="d-flex justify-content-center mt-3 align-items-center">
+        <small class="mr-1">powered by </small><fa-icon [icon]="angularIcon"></fa-icon>
+      </div>
+    </footer>
+  </div>
+</main>

@@ -9,6 +9,7 @@ import { InMemoryDataService } from './in-memory-data.service';
 import { TodosModule } from './todos/todos.module';
 import { DebugModule } from './debug/debug.module';
 import { UserModule } from './user/user.module';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,6 +23,7 @@ import { UserModule } from './user/user.module';
     TodosModule,
     DebugModule,
     UserModule,
+    FontAwesomeModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

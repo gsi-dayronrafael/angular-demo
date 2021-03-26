@@ -1,5 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Todo } from '../Todo';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Todo } from '../todo.model';
+import { TodosService } from '../todos.service';
 
 @Component({
   selector: 'app-todo',
@@ -8,43 +9,44 @@ import { Todo } from '../Todo';
 })
 export class TodoComponent implements OnInit {
   @Input() todo: Todo = {} as Todo;
-  @Output() todoRemove: EventEmitter<number> = new EventEmitter();
-  @Output() todoEdit: EventEmitter<Todo> = new EventEmitter();
+  @Output() remove = new EventEmitter<Todo>();
+  @Output() update = new EventEmitter<Todo>();
 
-  isEditing = false;
-
-  constructor() {}
+  constructor(private todoService: TodosService) {}
 
   ngOnInit(): void {}
 
-  toggleEditing(): void {
-    this.isEditing = !this.isEditing;
-  }
-
-  sendTodoChanges(): void {
-    this.todoEdit.emit(this.todo);
-    if (this.isEditing) {
-      this.toggleEditing();
-    }
-  }
-
-  toggleStatus(): void {
-    if (!this.todo) {
-      return;
-    }
+  onToggleStatus(): void {
     this.todo.completed = !this.todo?.completed;
-    this.sendTodoChanges();
+    this.todoService.updateTodo(this.todo).subscribe();
   }
 
-  setNewTitle(newTitle: string): void {
-    if (!this.todo) {
+  toggleEditing(): void {
+    this.todoService.setEditingTodoId(
+      !this.isEditing ? this.todo.id || -1 : -1
+    );
+  }
+
+  get isEditingSiblins(): boolean {
+    return this.todoService.todoEditingId !== -1;
+  }
+
+  get isEditing(): boolean {
+    return this.todoService.todoEditingId === this.todo.id;
+  }
+
+  onUpdate(newTitle: string): void {
+    if (!newTitle.trim()) {
       return;
+    }
+    if (this.isEditing) {
+      this.todoService.setEditingTodoId(-1);
     }
     this.todo.title = newTitle;
-    this.sendTodoChanges();
+    this.update.emit(this.todo);
   }
 
-  remove(todo: Todo): void {
-    this.todoRemove.emit(todo.id);
+  onRemove(): void {
+    this.remove.emit(this.todo);
   }
 }

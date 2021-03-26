@@ -1,3 +1,23 @@
 .completed {
   text-decoration: line-through;
 }
+
+.close{
+  float: none;
+  font-weight: normal;
+  line-height: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
+  opacity: .5;
+  font-size: 1rem;
+}
+
+.todo-title {
+  cursor: pointer;
+
+  &:hover::after {
+    content: "✎";
+    font-size: 12px;
+    margin-left: 6px;
+  }
+}
